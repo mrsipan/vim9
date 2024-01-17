@@ -435,6 +435,7 @@ nnoremap <Leader>fed :edit ~/.vimrc<CR>
 g:table_of_plugins = {
     "ctrlp": "https://github.com/ctrlpvim/ctrlp.vim.git",
     "sipan-theme": "https://github.com/mrsipan/vim-sipan-theme.git",
+    "emmet-vim": "https://github.com/mattn/emmet-vim.git",
     "vim-commentary": "https://github.com/tpope/vim-commentary.git",
     "vim-cutless": "https://github.com/svermeule/vim-cutlass.git",
     "vim-endwise": "https://github.com/tpope/vim-endwise.git",
@@ -520,3 +521,7 @@ command! ExecBuffer g:ExecBuffer()
 nnoremap gx :ExecBuffer<CR>
 
 set hlsearch
+
+# g:user_emmet_install_global = 0
+# autocmd FileType html,css EmmetInstall
+
