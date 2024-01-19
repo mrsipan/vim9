@@ -83,11 +83,11 @@ endif
 &undodir = _undodir
 set undofile
 
-g:git_present = executable("git")
+g:git_is_available = executable("git")
 
 def g:BranchName(): string
     var parent_dir = expand("%:p:h")
-    if g:git_present
+    if g:git_is_available
         var cmd = join(
             [
             "git -C",
@@ -128,7 +128,8 @@ g:maplocalleader = "9"
 nnoremap <Leader>cs :up<CR>:!ispell -x %<CR>:edit!<CR>
 
 # Mapping to switch off search highlighting
-nnoremap <silent> <Leader>/ :nohlsearch<CR>/<BS>
+# nnoremap <silent> <Leader>/ :nohlsearch<CR>/<BS>
+nnoremap <silent> <Leader>/ :nohlsearch<CR>
 
 # Switch between windows
 # nmap <C-j> <C-w>j<C-w>_
@@ -454,7 +455,7 @@ g:table_of_plugins = {
 }
 
 def InstallPlugins()
-    if !g:git_present
+    if !g:git_is_available
         echoerr "Git not present on system"
     endif
     var start_dir = expand("~/.vim/pack/plugins/start")
@@ -499,11 +500,11 @@ enddef
 
 g:yoinkIncludeDeleteOperations = 1
 
-nnoremap m d
-xnoremap m d
+nnoremap gm d
+xnoremap gm d
 
-nnoremap mm dd
-nnoremap M D
+nnoremap gmm dd
+nnoremap gM D
 
 g:matchup_matchparen_enabled = 0
 g:matchup_surround_enabled = 1
@@ -525,3 +526,13 @@ set hlsearch
 # g:user_emmet_install_global = 0
 # autocmd FileType html,css EmmetInstall
 
+
+# def NohlPre(_)
+#     execute "nohlsearch"
+#     redraw
+# enddef
+
+# var NohlWithDelay = () =>  timer_start(13000,  "NohlPre")
+# command! Nohl NohlWithDelay()
+
+# cnoremap <expr> <Enter> getcmdtype() =~# '[?/]' ? '<CR>:Nohl<CR>' : '<CR>'
