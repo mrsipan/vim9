@@ -14,6 +14,7 @@ set printoptions=paper:letter
 set ruler
 set showcmd
 set showmatch
+set matchtime=3
 set showmode
 set spelllang=en_us
 set nonumber
@@ -536,3 +537,9 @@ set hlsearch
 # command! Nohl NohlWithDelay()
 
 # cnoremap <expr> <Enter> getcmdtype() =~# '[?/]' ? '<CR>:Nohl<CR>' : '<CR>'
+
+hi MatchParen ctermbg=222 ctermfg=130 guibg=yellow
+# autocmd Syntax clojure DoMatchParen
+# autocmd Syntax python DoMatchParen
+autocmd BufEnter *.clj,*.cljs,*.py DoMatchParen
+autocmd BufLeave *.clj,*.cljs.*.py DoMatchParen
