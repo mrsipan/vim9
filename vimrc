@@ -436,8 +436,8 @@ nnoremap <Leader>fed :edit ~/.vimrc<CR>
 
 g:table_of_plugins = {
     "ctrlp": "https://github.com/ctrlpvim/ctrlp.vim.git",
-    "sipan-theme": "https://github.com/mrsipan/vim-sipan-theme.git",
     "emmet-vim": "https://github.com/mattn/emmet-vim.git",
+    "sipan-theme": "https://github.com/mrsipan/vim-sipan-theme.git",
     "vim-commentary": "https://github.com/tpope/vim-commentary.git",
     "vim-cutless": "https://github.com/mrsipan/vim-cutlass.git",
     "vim-endwise": "https://github.com/tpope/vim-endwise.git",
@@ -451,6 +451,7 @@ g:table_of_plugins = {
     "vim-subversive": "https://github.com/svermeulen/vim-subversive.git",
     "vim-surround": "https://github.com/tpope/vim-surround.git",
     "vim-terraform": "https://github.com/hashivim/vim-terraform.git",
+    "vim-vindent": "https://github.com/jessekelighine/vindent.vim.git",
     "vim-xonsh": "https://github.com/mrsipan/vim-xonsh.git",
     "vim-yoink": "https://github.com/svermeulen/vim-yoink.git",
 }
@@ -543,3 +544,17 @@ hi MatchParen ctermbg=222 ctermfg=130 guibg=yellow
 # autocmd Syntax python DoMatchParen
 autocmd BufEnter *.clj,*.cljs,*.py DoMatchParen
 autocmd BufLeave *.clj,*.cljs.*.py DoMatchParen
+
+# inoremap ( ()<Left>
+# inoremap [ []<Left>
+# inoremap { {}<Left>
+# inoremap ' ''<Left>
+# inoremap " ""<Left>
+
+
+g:vindent_object_XX_ii     = 'ii'
+g:vindent_object_XX_ai     = 'ai'
+g:vindent_object_XX_aI     = 'aI'
+g:vindent_jumps            = 1
+
+
