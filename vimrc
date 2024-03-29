@@ -2,6 +2,7 @@ vim9script
 silent! source $VIMRUNTIME/defaults.vim
 set nocompatible
 set autoindent
+set smartindent
 set background=dark
 set backspace=indent,eol,start
 set cinoptions=:0,l1,g0,t0,+.5s,(.5s,u0,U1,j1
@@ -83,6 +84,8 @@ if !isdirectory(_undodir)
 endif
 &undodir = _undodir
 set undofile
+set undolevels=9999
+
 
 g:git_is_available = executable("git")
 
@@ -187,9 +190,12 @@ g:ctrlp_custom_ignore = {
 iabbrev MODELINE vi:set sw=4 ts=4 sts=0 noet:<Esc>
 
 def g:Yapf()
-    const lnr = line('.')
+    const line_nr = line('.')
     const tmpfile = tempname()
+    const tmpfile_of_buffer = tempname()
     writefile(getline(1, "$"), tmpfile)
+    writefile(getline(1, "$"), tmpfile_of_buffer)
+
     const rv_string = system(
         'yapf -i --style="{based_on_style: facebook, indent_closing_brackets: true, arithmetic_precedence_indication: true, no_spaces_around_selected_binary_operators: true}"'
         ..
@@ -199,8 +205,12 @@ def g:Yapf()
     )
 
     if v:shell_error == 0
-        execute "silent!" ":%!cat" tmpfile
-        cursor(lnr, 1)
+        # const target_file = expand('%')
+        const _cmp = system($'cmp {tmpfile_of_buffer} {tmpfile}')
+        if v:shell_error != 0
+            execute "silent!" ":%!cat" tmpfile
+            cursor(line_nr, 1)
+        endif
     else
         throw rv_string
     endif
@@ -306,8 +316,8 @@ g:rbpt_types = [['(', ')'], ['\[', '\]'], ['{', '}']]
 g:rbpt_max = 16
 # let g:rbpt_loadcmd_toggle = 0
 
-# toggle paste
-set pastetoggle=<F9>
+# Toggle paste
+# set pastetoggle='<F10>'
 
 # completion in ex mode
 if exists("&wildignorecase")
@@ -338,6 +348,22 @@ autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
 autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 autocmd BufWinLeave * call clearmatches()
+
+def g:DisablePaste()
+    if &paste
+        set nopaste
+        set mouse=a
+        echo 'Setting nopaste'
+    endif
+    # if &l:diff
+    #     diffupdate
+    # endif
+enddef
+
+nnoremap go :set paste!<CR>o
+nnoremap gO :set paste!<CR>O
+
+autocmd InsertLeave * call DisablePaste()
 
 if executable('rg')
     set grepprg=rg\ --no-heading\ --color=never
@@ -448,7 +474,7 @@ g:table_of_plugins = {
     "vim-rainbow": "https://github.com/mrsipan/rainbow_parentheses.vim.git",
     "vim-repeat": "https://github.com/tpope/vim-repeat.git",
     "vim-sexp": "https://github.com/guns/vim-sexp.git",
-    "vim-subversive": "https://github.com/svermeulen/vim-subversive.git",
+    # "vim-subversive": "https://github.com/svermeulen/vim-subversive.git",
     "vim-surround": "https://github.com/tpope/vim-surround.git",
     "vim-terraform": "https://github.com/hashivim/vim-terraform.git",
     "vim-vindent": "https://github.com/jessekelighine/vindent.vim.git",
