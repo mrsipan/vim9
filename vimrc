@@ -380,7 +380,7 @@ g:gitgutter_sign_modified_removed = '±'
 g:gitgutter_enabled = 0
 
 nnoremap gGg :GitGutterToggle<CR>
-nnoremap gGb :Gblame<CR>
+nnoremap g= :!git diff<CR>
 
 nnoremap <Leader>q @q
 
