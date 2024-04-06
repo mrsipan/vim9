@@ -526,6 +526,18 @@ nnoremap q :HandleQuit<CR>
 def PullBusybox()
 enddef
 
+def g:RunTests()
+    # save buffers
+    #
+    if &filetype == 'python'
+        # Send to pytest
+        # system('pytest -s')
+        :!pytest -s
+    endif
+enddef
+command! RunTests g:RunTests()
+nnoremap <Leader>tt :RunTests<CR>
+
 g:yoinkIncludeDeleteOperations = 1
 
 nnoremap gm d
