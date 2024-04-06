@@ -457,7 +457,7 @@ enddef
 command! OrgBlogger OrgBlogger()
 nnoremap <Leader>bB :OrgBlogger<CR>
 
-nnoremap <Leader>fer :source ~/.vimrc<CR> \| :echo "Vimrc reloaded"<CR>
+nnoremap <Leader>feR :source ~/.vimrc<CR> \| :echo "Vimrc reloaded"<CR>
 nnoremap <Leader>fed :edit ~/.vimrc<CR>
 
 g:table_of_plugins = {
@@ -532,7 +532,7 @@ def g:RunTests()
     if &filetype == 'python'
         # Send to pytest
         # system('pytest -s')
-        :!pytest -s
+        execute ":!pytest -s"
     endif
 enddef
 command! RunTests g:RunTests()
