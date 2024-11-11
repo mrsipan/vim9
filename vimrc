@@ -459,6 +459,7 @@ nnoremap <Leader>bB :OrgBlogger<CR>
 
 nnoremap <Leader>feR :source ~/.vimrc<CR> \| :echo "Vimrc reloaded"<CR>
 nnoremap <Leader>fed :edit ~/.vimrc<CR>
+nnoremap <Leader>fex :edit ~/.xonshrc<CR>
 
 g:table_of_plugins = {
     "ctrlp": "https://github.com/ctrlpvim/ctrlp.vim.git",
@@ -594,5 +595,4 @@ g:vindent_object_XX_ii     = 'ii'
 g:vindent_object_XX_ai     = 'ai'
 g:vindent_object_XX_aI     = 'aI'
 g:vindent_jumps            = 1
-
 
