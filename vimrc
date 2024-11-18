@@ -146,7 +146,7 @@ nmap <Leader>fw :write<CR>
 # cmap w!! w !sudo tee % >/dev/null
 nnoremap <Leader>fW :sudo tee % >/dev/null<CR>
 
-nmap <silent> <Leader>fx :Vexplore!<CR>
+nmap <silent> <Leader>fX :Vexplore!<CR>
 
 # Just quit
 nmap Q :q<CR>
@@ -189,7 +189,17 @@ g:ctrlp_custom_ignore = {
 # Help other people with your file if layout is not default
 iabbrev MODELINE vi:set sw=4 ts=4 sts=0 noet:<Esc>
 
+g:yapf_enabled = true
+g:YapfToggle = () => {
+    g:yapf_enabled = !g:yapf_enabled
+}
+command! YapfToggle g:YapfToggle()
+nnoremap <Leader>ty :YapfToggle<CR>
+
 def g:Yapf()
+    if !g:yapf_enabled
+        return
+    endif
     const line_nr = line('.')
     const tmpfile = tempname()
     const tmpfile_of_buffer = tempname()
@@ -218,6 +228,7 @@ enddef
 
 command! Yapf g:Yapf()
 nnoremap <Leader>bf :Yapf<CR>
+
 
 # Replace this with zprint
 def g:Cljfmt()
@@ -418,8 +429,24 @@ nnoremap <Leader>Sc :set filetype=clojure<CR>
 
 g:yankring_map_dot = 0
 
-# Go home
-nnoremap <Leader>dc :cd %:p:h<CR>:pwd<CR>
+# Go to current file dir
+nnoremap <Leader>df :cd %:p:h<CR>:pwd<CR>
+
+# Move to home dir
+def g:MoveToHomeDir()
+    if g:git_is_available
+        system("git rev-parse --is-inside-work-tree > /dev/null")
+        if v:shell_error == 0
+            execute "cd" system("git rev-parse --show-toplevel")
+        endif
+        return
+    endif
+
+    execute "cd" "~/"
+enddef
+
+command! -bar MoveToHomeDir g:MoveToHomeDir()
+nnoremap <Leader>dr :MoveToHomeDir<CR>
 
 # To work with kitty
 if !has('gui_running')
@@ -519,6 +546,8 @@ def g:HandleQuit()
             endif
         endif
     endfor
+    # what?
+    redraw!
 enddef
 
 command! HandleQuit g:HandleQuit()
@@ -595,4 +624,98 @@ g:vindent_object_XX_ii     = 'ii'
 g:vindent_object_XX_ai     = 'ai'
 g:vindent_object_XX_aI     = 'aI'
 g:vindent_jumps            = 1
+
+# Taken from ranger-fm examples
+def g:RangerChooser()
+
+    var is_project = false
+
+    if g:git_is_available
+        system("git rev-parse --is-inside-work-tree > /dev/null")
+        if v:shell_error == 0
+            execute "silent! cd" system("git rev-parse --show-toplevel")
+            is_project = true
+        endif
+    endif
+
+    var tmpfile = tempname()
+    execute "silent! !ranger" (is_project ? "--cmd='flat -1'" : "") "--choosefiles=" .. shellescape(tmpfile)
+
+    if !filereadable(tmpfile)
+        redraw!
+        return
+    endif
+
+    var _files = readfile(tmpfile)
+
+    if empty(_files)
+        redraw!
+        return
+    endif
+
+    execute "edit" fnameescape(_files[0])
+
+    # Add the others to the buff list
+    for _file in slice(_files, 1)
+        execute "argadd" fnameescape(_file)
+    endfor
+    redraw!
+enddef
+
+command! -bar RangerChooser g:RangerChooser()
+nnoremap <Leader>fx :RangerChooser<CR>
+
+
+var _targetfile = "/tmp/page1.html"
+if !empty(getenv("ORG_TO_HTML_PATH"))
+    _targetfile = $ORG_TO_HTML_PATH
+endif
+
+var cmd = [
+    "pandoc",
+    "-f",
+    "org",
+    "-t",
+    "html5",
+    "-o",
+    _targetfile,
+]
+
+# Implement this as a server
+# var cmd = [
+#     "org2html.sh",
+#     _targetfile,
+# ]
+
+var _changedtick = -1
+def OnBufferModified()
+    var buf_content = join(getline(1, '$'), "\n")
+
+    if _changedtick != b:changedtick
+        # execute "silent write!" _targetfile
+        var _job = job_start(cmd)
+        if job_status(_job) == "fail"
+            echoerr "Failed to start" join(cmd, " ")
+            return
+        endif
+
+        var ch = job_getchannel(_job)
+        ch_sendraw(ch, buf_content)
+        # ch_close_in(ch)
+        ch_close(ch)
+        _changedtick = b:changedtick
+    endif
+    # var bufname = expand('%:p')
+enddef
+
+
+augroup BufferModified
+    autocmd!
+    autocmd TextChanged,TextChangedI *.org OnBufferModified()
+augroup END
+
+if argc() == 0
+    execute "silent! RangerChooser"
+    redraw!
+endif
 
