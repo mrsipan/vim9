@@ -499,15 +499,16 @@ g:table_of_plugins = {
     "vim-lsp": "https://github.com/yegappan/lsp",
     "vim-matchup": "https://github.com/andymass/vim-matchup.git",
     "vim-org": "https://github.com/mrsipan/org.vim.git",
+    "vim-puppet": "https://github.com/rodjek/vim-puppet.git",
     "vim-rainbow": "https://github.com/mrsipan/rainbow_parentheses.vim.git",
     "vim-repeat": "https://github.com/tpope/vim-repeat.git",
     "vim-sexp": "https://github.com/guns/vim-sexp.git",
-    # "vim-subversive": "https://github.com/svermeulen/vim-subversive.git",
     "vim-surround": "https://github.com/tpope/vim-surround.git",
     "vim-terraform": "https://github.com/hashivim/vim-terraform.git",
     "vim-vindent": "https://github.com/jessekelighine/vindent.vim.git",
     "vim-xonsh": "https://github.com/mrsipan/vim-xonsh.git",
     "vim-yoink": "https://github.com/svermeulen/vim-yoink.git",
+    # "vim-subversive": "https://github.com/svermeulen/vim-subversive.git",
 }
 
 def InstallPlugins()
