@@ -38,6 +38,7 @@ set nofoldenable
 set listchars=eol:⏎,tab:␉·,trail:␠,nbsp:⎵
 set winminheight=0
 set winminwidth=0
+set shm+=I
 &shell = executable("dash") ? "dash" : "sh"
 # set hlsearch
 
@@ -504,6 +505,7 @@ g:table_of_plugins = {
     "vim-repeat": "https://github.com/tpope/vim-repeat.git",
     "vim-sexp": "https://github.com/guns/vim-sexp.git",
     "vim-surround": "https://github.com/tpope/vim-surround.git",
+    "vim-elin": "https://github.com/liquidz/elin.git",
     "vim-terraform": "https://github.com/hashivim/vim-terraform.git",
     "vim-vindent": "https://github.com/jessekelighine/vindent.vim.git",
     "vim-xonsh": "https://github.com/mrsipan/vim-xonsh.git",
