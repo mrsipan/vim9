@@ -232,16 +232,15 @@ nnoremap <Leader>bf :Yapf<CR>
 
 
 # Replace this with zprint
-def g:Cljfmt()
-    execute "silent!" ":!cljfmt fix %"
-    # edit!
-enddef
-command! Cljfmt g:Cljfmt()
+# def g:Cljfmt()
+#     execute "silent!" ":!cljfmt fix %"
+#     # edit!
+# enddef
+# command! Cljfmt g:Cljfmt()
 # nnoremap <Leader>bf :Cljfmt<CR>
 
-def g:Zprint()
-
-enddef
+# def g:Zprint()
+# enddef
 
 if has("autocmd")
     filetype plugin indent on
@@ -279,6 +278,11 @@ if has("autocmd")
         # autocmd BufWritePre *.py silent :%!yapf --style='{based_on_style: facebook, indent_closing_brackets: true}'
         autocmd BufWritePre *.py Yapf
     endif
+
+    if executable("cljstyle")
+        autocmd BufWritePre *.clj Cljstyle
+    endif
+
     autocmd BufNewFile,BufRead Jenkinsfile setlocal filetype=groovy
 
 endif
@@ -463,8 +467,6 @@ endif
 
 # highlight DoneCheck ctermfg=194
 
-g:iced_enable_default_key_mappings = true
-
 g:org_target = "cat"
 
 def OrgBlogger()
@@ -496,7 +498,6 @@ g:table_of_plugins = {
     "vim-commentary": "https://github.com/tpope/vim-commentary.git",
     "vim-cutless": "https://github.com/mrsipan/vim-cutlass.git",
     "vim-endwise": "https://github.com/tpope/vim-endwise.git",
-    "vim-iced": "https://github.com/liquidz/vim-iced.git",
     "vim-lsp": "https://github.com/yegappan/lsp",
     "vim-matchup": "https://github.com/andymass/vim-matchup.git",
     "vim-org": "https://github.com/mrsipan/org.vim.git",
@@ -669,7 +670,8 @@ command! -bar RangerChooser g:RangerChooser()
 nnoremap <Leader>fx :RangerChooser<CR>
 
 
-var _targetfile = "/tmp/page1.html"
+var _targetfile = "/Users/e140583/tmp/arel/example/pages/page5.html"
+# var _targetfile = "/tmp/page1.html"
 if !empty(getenv("ORG_TO_HTML_PATH"))
     _targetfile = $ORG_TO_HTML_PATH
 endif
@@ -721,4 +723,54 @@ if argc() == 0
     execute "silent! RangerChooser"
     redraw!
 endif
+
+g:elin_enable_default_key_mappings = true
+
+
+g:cljstyle_enabled = true
+g:CljstyleToggle = () => {
+    g:cljstyle_enabled = !g:cljstyle_enabled
+    if g:cljstyle_enabled
+        echo "Cljstyle enabled"
+    else
+        echo "Cljstyle disabled"
+    endif
+}
+
+command! CljstyleToggle g:CljstyleToggle()
+nnoremap <Leader>tc :CljstyleToggle<CR>
+
+def g:Cljstyle()
+    if !g:cljstyle_enabled
+        return
+    endif
+    const line_n = line('.')
+    const tmpfile = tempname()
+    const tmpfile_of_buffer = tempname()
+    writefile(getline(1, "$"), tmpfile)
+    writefile(getline(1, "$"), tmpfile_of_buffer)
+
+    const rv_string = system(
+        'cljstyle fix'
+        ..
+        ' '
+        ..
+        tmpfile
+    )
+
+    if v:shell_error == 0
+        echo tmpfile
+        # const target_file = expand('%')
+        const _cmp = system($'cmp {tmpfile_of_buffer} {tmpfile}')
+        if v:shell_error != 0
+            execute "silent!" ":%!cat" tmpfile
+            cursor(line_n, 1)
+        endif
+    else
+        throw rv_string
+    endif
+enddef
+
+command! Cljstyle g:Cljstyle()
+nnoremap <Leader>bf :Cljstyle<CR>
 
