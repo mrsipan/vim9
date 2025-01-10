@@ -242,50 +242,6 @@ nnoremap <Leader>bf :Yapf<CR>
 # def g:Zprint()
 # enddef
 
-if has("autocmd")
-    filetype plugin indent on
-
-    # In text files, always limit the width of text to 72 characters.
-    autocmd FileType org,text,nroff setlocal tw=72
-    autocmd FileType tex,docbk,html,sgml,xhtml,xml setlocal sw=2 sts=2 et tw=72
-    autocmd FileType html,xhtml hi htmlItalic term=underline cterm=underline
-    # Java, JavaScript, Perl, Python and Tcl indent.
-    autocmd FileType java,javascript,perl,python,tcl,vim,groovy,julia,xonsh
-       \ setlocal sw=4 sts=4 et
-    autocmd FileType python b:dispatch = 'pytest %'
-    autocmd FileType go setlocal tabstop=3
-    # Expand tab in Scheme and Lisp to preserve alignment.
-    autocmd FileType lisp,scheme setlocal et
-    # Python doctest indent.
-    autocmd FileType rst,cfg,org setlocal sw=4 sts=4 et tw=72
-    # Yaml
-    autocmd FileType yml,yaml,json setlocal tabstop=2 sw=2 sts=2 et
-    # Shell scripts
-    autocmd FileType cpp,sh,spec,clj,lua,pp,rs,Dockerfile setlocal tabstop=2 sw=2 et
-
-    # Remove trailing whitespaces on save
-    autocmd BufWritePre * :%s/\s\+$//e
-    # autocmd BufWritePre
-    #    \ *.vim,*.py,*.org,*.rst,*.txt,*.clj,*.cljs,*.js,*.sh,*.rb,*.scala,*.groovy,Dockerfile :%s/\s\+$//e
-
-    # # Replace this with zprint and use a tmpfile
-    # if executable("cljfmt")
-    #     autocmd BufWritePost *.cljs g:Cljfmt()
-    # endif
-
-    if executable("yapf")
-        # autocmd BufWritePost *.py silent! !yapf -i --style='{based_on_style: facebook, indent_closing_brackets: true}' %
-        # autocmd BufWritePre *.py silent :%!yapf --style='{based_on_style: facebook, indent_closing_brackets: true}'
-        autocmd BufWritePre *.py Yapf
-    endif
-
-    if executable("cljstyle")
-        autocmd BufWritePre *.clj Cljstyle
-    endif
-
-    autocmd BufNewFile,BufRead Jenkinsfile setlocal filetype=groovy
-
-endif
 
 # ctrl-u in insert mode deletes a lot. use ctrl-g u to first break undo
 # so that you can undo ctrl-u after inserting a new line
@@ -738,15 +694,15 @@ g:CljstyleToggle = () => {
 }
 
 command! CljstyleToggle g:CljstyleToggle()
-nnoremap <Leader>tc :CljstyleToggle<CR>
+nnoremap <Leader>tj :CljstyleToggle<CR>
 
 def g:Cljstyle()
     if !g:cljstyle_enabled
         return
     endif
     const line_n = line('.')
-    const tmpfile = tempname()
-    const tmpfile_of_buffer = tempname()
+    const tmpfile = tempname() .. '.cljs'
+    const tmpfile_of_buffer = tempname() .. 'cljs'
     writefile(getline(1, "$"), tmpfile)
     writefile(getline(1, "$"), tmpfile_of_buffer)
 
@@ -759,7 +715,6 @@ def g:Cljstyle()
     )
 
     if v:shell_error == 0
-        echo tmpfile
         # const target_file = expand('%')
         const _cmp = system($'cmp {tmpfile_of_buffer} {tmpfile}')
         if v:shell_error != 0
@@ -772,5 +727,49 @@ def g:Cljstyle()
 enddef
 
 command! Cljstyle g:Cljstyle()
-nnoremap <Leader>bf :Cljstyle<CR>
+# nnoremap <Leader>bf :Cljstyle<CR>
 
+if has("autocmd")
+    filetype plugin indent on
+
+    # In text files, always limit the width of text to 72 characters.
+    autocmd FileType org,text,nroff setlocal tw=72
+    autocmd FileType tex,docbk,html,sgml,xhtml,xml setlocal sw=2 sts=2 et tw=72
+    autocmd FileType html,xhtml hi htmlItalic term=underline cterm=underline
+    # Java, JavaScript, Perl, Python and Tcl indent.
+    autocmd FileType java,javascript,perl,python,tcl,vim,groovy,julia,xonsh
+       \ setlocal sw=4 sts=4 et
+    autocmd FileType python b:dispatch = 'pytest %'
+    autocmd FileType go setlocal tabstop=3
+    # Expand tab in Scheme and Lisp to preserve alignment.
+    autocmd FileType lisp,scheme setlocal et
+    # Python doctest indent.
+    autocmd FileType rst,cfg,org setlocal sw=4 sts=4 et tw=72
+    # Yaml
+    autocmd FileType yml,yaml,json setlocal tabstop=2 sw=2 sts=2 et
+    # Shell scripts
+    autocmd FileType cpp,sh,spec,clj,lua,pp,rs,Dockerfile setlocal tabstop=2 sw=2 et
+
+    # Remove trailing whitespaces on save
+    autocmd BufWritePre * :%s/\s\+$//e
+    # autocmd BufWritePre
+    #    \ *.vim,*.py,*.org,*.rst,*.txt,*.clj,*.cljs,*.js,*.sh,*.rb,*.scala,*.groovy,Dockerfile :%s/\s\+$//e
+
+    # # Replace this with zprint and use a tmpfile
+    # if executable("cljfmt")
+    #     autocmd BufWritePost *.cljs g:Cljfmt()
+    # endif
+
+    if executable("yapf")
+        # autocmd BufWritePost *.py silent! !yapf -i --style='{based_on_style: facebook, indent_closing_brackets: true}' %
+        # autocmd BufWritePre *.py silent :%!yapf --style='{based_on_style: facebook, indent_closing_brackets: true}'
+        autocmd BufWritePre *.py Yapf
+    endif
+
+    if executable("cljstyle")
+        autocmd BufWritePre *.cljs Cljstyle
+    endif
+
+    autocmd BufNewFile,BufRead Jenkinsfile setlocal filetype=groovy
+
+endif
