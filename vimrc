@@ -208,6 +208,14 @@ def g:Yapf()
     writefile(getline(1, "$"), tmpfile_of_buffer)
 
     const rv_string = system(
+        'isort --om'
+        ..
+        ' '
+        ..
+        tmpfile
+        ..
+        ' && '
+        ..
         'yapf -i --style="{based_on_style: facebook, indent_closing_brackets: true, arithmetic_precedence_indication: true, no_spaces_around_selected_binary_operators: true}"'
         ..
         ' '
@@ -760,7 +768,7 @@ if has("autocmd")
     #     autocmd BufWritePost *.cljs g:Cljfmt()
     # endif
 
-    if executable("yapf")
+    if executable("yapf") && executable("isort")
         # autocmd BufWritePost *.py silent! !yapf -i --style='{based_on_style: facebook, indent_closing_brackets: true}' %
         # autocmd BufWritePre *.py silent :%!yapf --style='{based_on_style: facebook, indent_closing_brackets: true}'
         autocmd BufWritePre *.py Yapf
