@@ -216,7 +216,12 @@ def g:Yapf()
         ..
         ' && '
         ..
-        'yapf -i --style="{based_on_style: facebook, indent_closing_brackets: true, arithmetic_precedence_indication: true, no_spaces_around_selected_binary_operators: true}"'
+        'yapf -i --style="{'
+        ..  'based_on_style: facebook,'
+        ..  'indent_closing_brackets: true,'
+        ..  'arithmetic_precedence_indication: true,'
+        ..  'no_spaces_around_selected_binary_operators: true'
+        '}"'
         ..
         ' '
         ..
